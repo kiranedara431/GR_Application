@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GR
 {
-    class UpdateInventory : IUpdateInventory
+    public class UpdateInventory : IUpdateInventory
     {
         public void Update(List<Item> Items)
         {

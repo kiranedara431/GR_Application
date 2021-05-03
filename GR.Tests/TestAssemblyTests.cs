@@ -2,6 +2,7 @@
 using System.Linq;
 using Xunit;
 using Moq;
+using Unity;
 
 namespace GR.Tests
 {
@@ -9,16 +10,26 @@ namespace GR.Tests
     {
         public List<Item> Items { get; set; }
 
-        private readonly InventoryApp _inventoryApp;
-        private Mock<IUpdateInventory> _updateInventoryMock = new Mock<IUpdateInventory>();
+        //private readonly InventoryApp _inventoryApp;
+        //private Mock<IUpdateInventory> _updateInventoryMock = new Mock<IUpdateInventory>();
         public TestAssemblyTests()
         {
+            // tried mocking the dependency, but it couldn't enter the update method, 
+            // so used unity to register the dependency just like did it in the main program
+            var container = new UnityContainer();
+            container.RegisterType<IUpdateInventory, UpdateInventory>();
+
+            var inventoryApp = container.Resolve<InventoryApp>();
+
             Items = LoadItems();
+            inventoryApp.UpdateInventoryProcess(Items);
 
-            _updateInventoryMock.Setup(x=>x.Update(It.IsAny<List<Item>>())).Verifiable();
 
-            _inventoryApp = new InventoryApp(_updateInventoryMock.Object);
-            _inventoryApp.UpdateInventoryProcess(Items);
+
+            //_updateInventoryMock.Setup(x=>x.Update(It.IsAny<List<Item>>())).Verifiable();
+
+            //_inventoryApp = new InventoryApp(_updateInventoryMock.Object);
+            //_inventoryApp.UpdateInventoryProcess(Items);
 
         }
 
@@ -79,22 +90,22 @@ namespace GR.Tests
             Assert.Equal(9, Items.First(x => x.Name == "+5 Dexterity Vest").SellIn);
         }
 
-        //[Fact]
-        //public void DexterityVest_Quality_ShouldDecreaseByOne()
-        //{
-        //    Assert.Equal(19, _app.Items.First(x => x.Name == "+5 Dexterity Vest").Quality);
-        //}
+        [Fact]
+        public void DexterityVest_Quality_ShouldDecreaseByOne()
+        {
+            Assert.Equal(19, Items.First(x => x.Name == "+5 Dexterity Vest").Quality);
+        }
 
-        //[Fact]
-        //public void Conjured_SellIn_ShouldDecreaseByOne()
-        //{
-        //    Assert.Equal(2, _app.Items.First(x => x.Name == "Conjured Mana Cake").SellIn);
-        //}
+        [Fact]
+        public void Conjured_SellIn_ShouldDecreaseByOne()
+        {
+            Assert.Equal(2, Items.First(x => x.Name == "Conjured Mana Cake").SellIn);
+        }
 
-        //[Fact]
-        //public void Conjured_Quality_ShouldDecreaseByTwo()
-        //{
-        //    Assert.Equal(4, _app.Items.First(x => x.Name == "Conjured Mana Cake").Quality);
-        //}
+        [Fact]
+        public void Conjured_Quality_ShouldDecreaseByTwo()
+        {
+            Assert.Equal(4, Items.First(x => x.Name == "Conjured Mana Cake").Quality);
+        }
     }
 }
