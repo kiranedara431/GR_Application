@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using Newtonsoft.Json;
+using Unity;
 
 namespace GR
 {
@@ -12,14 +13,14 @@ namespace GR
         {
             Console.WriteLine("Welcome");
 
-            var updateInventory = new UpdateInventory();
+            var container = new UnityContainer();
+            container.RegisterType<IUpdateInventory, UpdateInventory>();
 
-            InventoryApp inventoryApp = new InventoryApp(updateInventory);
+            var inventoryApp = container.Resolve<InventoryApp>();
 
-            var Items = inventoryApp.GetItems();
+            var Items = inventoryApp.LoadItems();
             inventoryApp.UpdateInventoryProcess(Items);
 
-            Console.WriteLine("Inventory update complete");
             Console.ReadKey();
         }
     }

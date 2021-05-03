@@ -13,19 +13,21 @@ namespace GR
         IUpdateInventory _updateInventory;
         public InventoryApp(IUpdateInventory updateInventory)
         {
-            this._updateInventory = updateInventory;
+            _updateInventory = updateInventory;
         }
 
         public void UpdateInventoryProcess(List<Item> Items)
         {
+            Console.WriteLine("Updating inventory");
             _updateInventory.Update(Items);
+            Console.WriteLine("Inventory update complete");
 
             var filename = $"inventory_{DateTime.Now:yyyyddMM-HHmmss}.txt";
             var inventoryOutput = JsonConvert.SerializeObject(Items, Formatting.Indented);
             File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filename), inventoryOutput);
         }
 
-        public List<Item> GetItems()
+        public List<Item> LoadItems()
         {
             var Items = new List<Item>
                 {

@@ -5,7 +5,6 @@ namespace GR
     public interface IInventoryApp
     {
         void UpdateInventoryProcess(List<Item> Items);
-        List<Item> GetItems();
-
+        List<Item> LoadItems();
     }
 }

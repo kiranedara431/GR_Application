@@ -10,9 +10,7 @@ namespace GR
     {
         public void Update(List<Item> Items)
         {
-            Console.WriteLine("Updating inventory");
-
-            foreach (var item in Items)
+            foreach (var item in Items) 
             {
                 Console.WriteLine(" - Item: {0}", item.Name);
 
